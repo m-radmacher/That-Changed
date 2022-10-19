@@ -24,7 +24,7 @@ type Commit = {
 async function run() {
   const uploadArtifact = core.getBooleanInput('upload-artifact');
   const language = core.getInput('language');
-  const token = core.getInput('token') || process.env.GITHUB_TOKEN;
+  const token = core.getInput('token') || process.env.GITHUB_TOKEN || '';
   const repository = core.getInput('repo').split('/');
   if (repository.length !== 2) {
     core.setFailed('Invalid repository name provided.' + repository);
