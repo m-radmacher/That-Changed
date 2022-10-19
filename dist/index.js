@@ -127,7 +127,8 @@ function run() {
         }
         // validate email settings
         if (sendEmail === true) {
-            if (!smtpHost || !smtpPort || !smtpSecure || !smtpUser || !smtpPassword || !smtpFrom || !emailTo) {
+            if (!smtpHost || !smtpPort || !smtpUser || !smtpPassword || !smtpFrom || !emailTo) {
+                core.debug(JSON.stringify({ smtpHost, smtpPort, smtpUser, smtpPassword, smtpFrom, emailTo }));
                 console.log(chalk_1.default.bgRedBright('Invalid email settings provided.'));
                 core.setFailed('Invalid email settings provided.');
                 return;
