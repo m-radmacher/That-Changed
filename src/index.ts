@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import PDFDocument from 'pdfkit';
 import * as fs from 'fs';
 import {
+  getEnglishAuthor,
   getEnglishHeader,
   getEnglishOpenInGH,
   getEnglishSubheader,
@@ -59,7 +60,7 @@ async function createPDF(
 ) {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream('output.pdf'));
-  // Embed a font, set the font size, and render some text
+
   doc
     .font('./fonts/Inter.ttf')
     .fontSize(25)
@@ -94,7 +95,7 @@ async function createPDF(
     doc
       .fillColor('#000000')
       .fontSize(10)
-      .text(`${language === 'de' ? getGermanAuthor() : getGermanAuthor}: ${commit.author}`, { indent: 7 });
+      .text(`${language === 'de' ? getGermanAuthor() : getEnglishAuthor()}: ${commit.author}`, { indent: 7 });
     doc.moveDown(1);
   }
 
