@@ -1,0 +1,149 @@
+import { getOctokit } from '@actions/github';
+import * as core from '@actions/core';
+import * as artifact from '@actions/artifact';
+import chalk from 'chalk';
+import PDFDocument from 'pdfkit';
+import * as fs from 'fs';
+import {
+  getEnglishHeader,
+  getEnglishOpenInGH,
+  getEnglishSubheader,
+  getGermanAuthor,
+  getGermanHeader,
+  getGermanOpenInGH,
+  getGermanSubheader,
+} from './i18n';
+
+type Commit = {
+  author: string | null;
+  url: string;
+  message: string;
+  date: Date | null;
+};
+
+async function run() {
+  const uploadArtifact = core.getBooleanInput('upload-artifact');
+  const language = core.getInput('language');
+  const token = core.getInput('token') || process.env.GITHUB_TOKEN;
+  const repository = core.getInput('repo').split('/');
+  if (repository.length !== 2) {
+    core.setFailed('Invalid repository name provided.' + repository);
+    return;
+  }
+  const owner = repository[0];
+  const repo = repository[1];
+
+  if (language !== 'de' && language !== 'en') {
+    console.log(chalk.bgRed('Invalid language provided. Defaulting to English.'));
+  }
+
+  console.log('Fetching commits...');
+  const { commits, head, base } = await fetchDataFromGitHub(token, owner, repo);
+  console.log('Creating PDF...');
+  createPDF(commits, owner, repo, language, base.name, head.name);
+  console.log('Wrote PDF file.');
+  if (uploadArtifact) {
+    console.log('Uploading artifact...');
+    await artifact.create().uploadArtifact('changelog', ['output.pdf'], '.');
+    console.log('Uploaded artifact.');
+  }
+}
+
+async function createPDF(
+  commits: Commit[],
+  owner: string,
+  repo: string,
+  language: string,
+  baseTag: string,
+  headTag: string
+) {
+  const doc = new PDFDocument();
+  doc.pipe(fs.createWriteStream('output.pdf'));
+  // Embed a font, set the font size, and render some text
+  doc
+    .font('./fonts/Inter.ttf')
+    .fontSize(25)
+    .text(language === 'de' ? getGermanHeader(repo) : getEnglishHeader(repo), {
+      align: 'center',
+      link: `https://github.com/${owner}/${repo}`,
+    });
+
+  doc.moveDown(1);
+
+  doc
+    .fontSize(17)
+    .text(language === 'de' ? getGermanSubheader(baseTag, headTag) : getEnglishSubheader(baseTag, headTag), {
+      align: 'center',
+    });
+
+  doc.moveDown(3);
+
+  for (const commit of commits) {
+    if (commit.date) {
+      doc
+        .fontSize(12)
+        .text(commit.message, { continued: true, link: commit.url })
+        .fillColor('#828282')
+        .fontSize(10)
+        .text(` (${commit.date?.getDate()}.${commit.date?.getMonth()}.${commit.date?.getFullYear()})`, {
+          link: commit.url,
+        });
+    } else {
+      doc.fontSize(12).text(commit.message, { link: commit.url });
+    }
+    doc
+      .fillColor('#000000')
+      .fontSize(10)
+      .text(`${language === 'de' ? getGermanAuthor() : getGermanAuthor}: ${commit.author}`, { indent: 7 });
+    doc.moveDown(1);
+  }
+
+  doc.moveDown(5);
+  doc.text(language === 'de' ? getGermanOpenInGH() : getEnglishOpenInGH(), {
+    link: `https://github.com/${owner}/${repo}/compare/${baseTag}...${headTag}`,
+    underline: true,
+  });
+
+  //Finalize PDF file
+  doc.end();
+}
+
+async function fetchDataFromGitHub(token: string, owner: string, repo: string) {
+  const octokit = getOctokit(token);
+
+  const { data: tags } = await octokit.rest.repos.listTags({
+    owner,
+    repo,
+  });
+
+  if (tags.length < 2) {
+    core.setFailed('Not enough tags found. There need to be at least two tags.');
+    process.exit(1);
+  }
+
+  const base = tags[1];
+  const head = tags[0];
+
+  console.log(`Comparing tag *${chalk.cyan(base.name)}* with tag *${chalk.cyan(head.name)}*.`);
+
+  const { data: comparison } = await octokit.rest.repos.compareCommits({
+    owner,
+    repo,
+    base: base.name,
+    head: head.name,
+  });
+
+  const commits: Commit[] = comparison.commits.map((cm) => {
+    return {
+      author: cm.commit.author && cm.commit.author.name ? cm.commit.author.name : null,
+      date: cm.commit.author && cm.commit.author.date ? new Date(cm.commit.author.date) : null,
+      message: cm.commit.message,
+      url: cm.html_url,
+    };
+  });
+
+  core.debug(`Parsed ${commits.length} commits.`);
+  return { commits, head, base };
+}
+
+run();

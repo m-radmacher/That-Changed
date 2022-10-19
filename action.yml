@@ -1,0 +1,28 @@
+name: 'Changed'
+description: 'A GitHub action that generates a changelog in the PDF file format.'
+author: 'rdmchr'
+inputs:
+  token:
+    description: 'GitHub personal access token. Defaults to github.token'
+    required: false
+    default: ${{ github.token }}
+  language:
+    description: 'Language of the changelog (en or de). Defaults to en'
+    required: false
+    default: 'en'
+  upload:
+    description: 'Whether to upload the changelog as a build artifact. Defaults to true'
+    required: false
+    default: true
+  repo:
+    description: 'Repository to generate the changelog for. Defaults to the current repository (<username>/<repo>)'
+    required: false
+    default: ${{ github.repository }}
+env:
+  'GITHUB_TOKEN': 'Provided by GitHub actions'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  color: "orange"
+  icon: "clipboard"

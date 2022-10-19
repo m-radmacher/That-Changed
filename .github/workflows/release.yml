@@ -1,0 +1,43 @@
+name: Release project
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+          description: 'SEMVER version as string'
+          required: true 
+          type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: yarn install --frozen-lockfile
+    - name: Install pkg
+      run: npm i -g pkg
+    - name: Run tsc
+      run: yarn build
+    - name: Create tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/v${{inputs.version}}',
+            sha: context.sha
+          })
+    - name: Release
+      uses: softprops/action-gh-release@v0.1.14
+      with:
+        tag_name: v${{inputs.version}}
+        name: Version ${{inputs.version}}
+        generate_release_notes: true
