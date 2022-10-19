@@ -14,8 +14,9 @@ import {
   getGermanOpenInGH,
   getGermanSubheader,
 } from './i18n';
+import { createMailTransport, sendChangelogMail, verifyMailTransporter } from './mailing';
 
-type Commit = {
+export type Commit = {
   author: string | null;
   url: string;
   message: string;
@@ -23,6 +24,15 @@ type Commit = {
 };
 
 async function run() {
+  const sendEmail = core.getBooleanInput('send_email');
+  const smtpHost = core.getInput('smtp_host');
+  const smtpPort = Number(core.getInput('smtp_port'));
+  const smtpSecure = core.getBooleanInput('smtp_secure');
+  const smtpUser = core.getInput('smtp_user');
+  const smtpPassword = core.getInput('smtp_password');
+  const smtpFrom = core.getInput('smtp_from');
+  const emailTo = core.getInput('email_to').split(';');
+
   const uploadArtifact = core.getBooleanInput('upload-artifact');
   const language = core.getInput('language');
   const token = core.getInput('token') || process.env.GITHUB_TOKEN || '';
@@ -35,7 +45,16 @@ async function run() {
   const repo = repository[1];
 
   if (language !== 'de' && language !== 'en') {
-    console.log(chalk.bgRed('Invalid language provided. Defaulting to English.'));
+    console.log(chalk.bgRedBright('Invalid language provided. Defaulting to English.'));
+  }
+
+  // validate email settings
+  if (sendEmail === true) {
+    if (!smtpHost || !smtpPort || !smtpSecure || !smtpUser || !smtpPassword || !smtpFrom || !emailTo) {
+      console.log(chalk.bgRedBright('Invalid email settings provided.'));
+      core.setFailed('Invalid email settings provided.');
+      return;
+    }
   }
 
   console.log('Fetching commits...');
@@ -47,6 +66,13 @@ async function run() {
     console.log('Uploading artifact...');
     await artifact.create().uploadArtifact('changelog', ['output.pdf'], '.');
     console.log('Uploaded artifact.');
+  }
+  if (sendEmail === true) {
+    console.log('Sending email...');
+    const transporter = createMailTransport(smtpHost, smtpPort, smtpSecure, smtpUser, smtpPassword);
+    await verifyMailTransporter(transporter);
+    await sendChangelogMail(transporter, emailTo, smtpFrom, language, base.name, head.name);
+    console.log('Sent email.');
   }
 }
 
@@ -109,7 +135,7 @@ async function createPDF(
   doc.end();
 }
 
-async function fetchDataFromGitHub(token: string, owner: string, repo: string) {
+export async function fetchDataFromGitHub(token: string, owner: string, repo: string) {
   const octokit = getOctokit(token);
 
   const { data: tags } = await octokit.rest.repos.listTags({

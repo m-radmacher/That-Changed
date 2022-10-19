@@ -18,6 +18,28 @@ inputs:
     description: 'Repository to generate the changelog for. Defaults to the current repository (<username>/<repo>)'
     required: false
     default: ${{ github.repository }}
+  send_email:
+    description: 'Whether to send the changelog as an email. Defaults to false'
+    required: false
+    default: false
+  smtp_host:
+    description: 'SMTP host to send the email from.'
+    required: false
+  smtp_port:
+    description: 'SMTP port to send the email from.'
+    required: false
+  smtp_username:
+    description: 'SMTP username to send emails.'
+    required: false
+  smtp_password:
+    description: 'SMTP password for the SMTP user.'
+    required: false
+  smtp_from:
+    description: 'Email address to send the email from.'
+    required: false
+  email_to:
+    description: 'Email address to send the email to. (Semicolon separated list)'
+    required: false
 env:
   'GITHUB_TOKEN': 'Provided by GitHub actions'
 runs:
