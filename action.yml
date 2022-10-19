@@ -37,6 +37,10 @@ inputs:
   smtp_from:
     description: 'Email address to send the email from.'
     required: false
+  smtp_secure:
+    description: 'Whether to use a secure connection to send the email. Defaults to false'
+    required: false
+    default: false
   email_to:
     description: 'Email address to send the email to. (Semicolon separated list)'
     required: false
