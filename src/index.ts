@@ -33,7 +33,7 @@ async function run() {
   const smtpFrom = core.getInput('smtp_from');
   const emailTo = core.getInput('email_to').split(';');
 
-  const uploadArtifact = core.getBooleanInput('upload-artifact');
+  const uploadArtifact = core.getBooleanInput('upload');
   const language = core.getInput('language');
   const token = core.getInput('token') || process.env.GITHUB_TOKEN || '';
   const repository = core.getInput('repo').split('/');
