@@ -108,7 +108,7 @@ function run() {
         const smtpHost = core.getInput('smtp_host');
         const smtpPort = Number(core.getInput('smtp_port'));
         const smtpSecure = core.getBooleanInput('smtp_secure');
-        const smtpUser = core.getInput('smtp_user');
+        const smtpUser = core.getInput('smtp_username');
         const smtpPassword = core.getInput('smtp_password');
         const smtpFrom = core.getInput('smtp_from');
         const emailTo = core.getInput('email_to').split(';');
