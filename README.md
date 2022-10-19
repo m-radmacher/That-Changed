@@ -2,7 +2,7 @@
   📋🔎
 </h1>
 <h1 align="center">
-  Changed (GitHub action)
+  What Changed (GitHub action)
 </h1>
 
 <p align="center">

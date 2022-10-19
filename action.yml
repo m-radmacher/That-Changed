@@ -1,4 +1,4 @@
-name: 'Changed'
+name: 'what-changed'
 description: 'A GitHub action that generates a changelog in the PDF file format.'
 author: 'rdmchr'
 inputs:
