@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint src",
+    "fix": "eslint src --fix"
   },
   "devDependencies": {
     "@types/node": "^18.11.2",
