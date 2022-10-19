@@ -15,6 +15,13 @@
 - **upload**: Whether to upload the changelog as an artifact. (Defaults to `true`)
 - **repo**: The repository you want to generate the changelog for in the format `<username>/<repo>`. (Defaults to `${{ github.repository }}`)
 
+## Examples
+You can find the full examples in the [examples](examples) directory.
+German example:
+![German demo](/examples/de.png)
+
+English Example:
+![English demo](/examples/en.png)
 ## Credits
 Fonts used:
  - [Inter](https://github.com/rsms/inter)
