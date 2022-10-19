@@ -29,3 +29,11 @@ export function getEnglishAuthor() {
 export function getGermanAuthor() {
   return 'Autor';
 }
+
+export function getEnglishEmailSubject(base: string, head: string) {
+  return `Changelog for ${base} to ${head}`;
+}
+
+export function getGermanEmailSubject(base: string, head: string) {
+  return `Änderungsprotokoll für ${base} zu ${head}`;
+}
