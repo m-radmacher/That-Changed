@@ -66,7 +66,7 @@ async function run() {
   console.log('Wrote PDF file.');
   if (uploadArtifact) {
     console.log('Uploading artifact...');
-    await artifact.create().uploadArtifact('changelog', [path.join('/', 'temp', 'changelog', 'output.pdf')], '.');
+    await artifact.create().uploadArtifact('changelog', ['D:/temp/changelog/output.pdf'], '.');
     console.log('Uploaded artifact.');
   }
   if (sendEmail === true) {
@@ -80,7 +80,7 @@ async function run() {
 
 function createPDF(commits: Commit[], owner: string, repo: string, language: string, baseTag: string, headTag: string) {
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream(path.join('/', 'temp', 'changelog', 'output.pdf')));
+  doc.pipe(fs.createWriteStream('D:/temp/changelog/output.pdf'));
 
   // list available fonts
   if (fs.existsSync(path.join(__dirname, 'fonts'))) {
