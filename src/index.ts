@@ -90,15 +90,14 @@ async function createPDF(
   doc.pipe(fs.createWriteStream('output.pdf'));
 
   // list available fonts
-  core.debug(fs.readdirSync(path.join(__dirname), { withFileTypes: true }).join('; '));
   if (fs.existsSync(path.join(__dirname, 'fonts'))) {
-    core.debug(fs.readdirSync(path.join(__dirname, 'fonts'), { withFileTypes: true }).join('; '));
+    core.debug("Available fonts: " + fs.readdirSync(path.join(__dirname, 'fonts')).join(', '));
   } else {
     core.debug('fonts folder does not exist');
   }
 
   doc
-    .font('./fonts/Inter.ttf')
+    .font(path.join(__dirname, 'fonts', 'Inter.ttf'))
     .fontSize(25)
     .text(language === 'de' ? getGermanHeader(repo) : getEnglishHeader(repo), {
       align: 'center',

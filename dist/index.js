@@ -160,15 +160,14 @@ function createPDF(commits, owner, repo, language, baseTag, headTag) {
         const doc = new pdfkit_1.default();
         doc.pipe(fs.createWriteStream('output.pdf'));
         // list available fonts
-        core.debug(fs.readdirSync(path_1.default.join(__dirname), { withFileTypes: true }).join('; '));
         if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
-            core.debug(fs.readdirSync(path_1.default.join(__dirname, 'fonts'), { withFileTypes: true }).join('; '));
+            core.debug("Available fonts: " + fs.readdirSync(path_1.default.join(__dirname, 'fonts')).join(', '));
         }
         else {
             core.debug('fonts folder does not exist');
         }
         doc
-            .font('./fonts/Inter.ttf')
+            .font(path_1.default.join(__dirname, 'fonts', 'Inter.ttf'))
             .fontSize(25)
             .text(language === 'de' ? (0, i18n_1.getGermanHeader)(repo) : (0, i18n_1.getEnglishHeader)(repo), {
             align: 'center',
