@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "copy-fonts": "cpy fonts/* dist/fonts/",
     "package": "ncc build --source-map",
     "delete": "rimraf dist/ lib/",
     "lint": "eslint src",
     "fix": "eslint src --fix",
-    "p": "yarn delete && yarn build && yarn package"
+    "p": "yarn delete && yarn build && yarn package && yarn copy-fonts"
   },
   "devDependencies": {
     "@types/node": "^18.11.2",
@@ -19,6 +20,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@vercel/ncc": "^0.34.0",
+    "cpy-cli": "^4.2.0",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
