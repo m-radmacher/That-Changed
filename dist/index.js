@@ -142,7 +142,7 @@ function run() {
         console.log('Wrote PDF file.');
         if (uploadArtifact) {
             console.log('Uploading artifact...');
-            yield artifact.create().uploadArtifact('changelog', ['output.pdf'], '.');
+            yield artifact.create().uploadArtifact('changelog', [path_1.default.join(__dirname, 'output.pdf')], '.');
             console.log('Uploaded artifact.');
         }
         if (sendEmail === true) {
@@ -157,7 +157,7 @@ function run() {
 function createPDF(commits, owner, repo, language, baseTag, headTag) {
     var _a, _b, _c;
     const doc = new pdfkit_1.default();
-    doc.pipe(fs.createWriteStream('output.pdf'));
+    doc.pipe(fs.createWriteStream(path_1.default.join(__dirname, 'output.pdf')));
     // list available fonts
     if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
         core.debug('Available fonts: ' + fs.readdirSync(path_1.default.join(__dirname, 'fonts')).join(', '));
