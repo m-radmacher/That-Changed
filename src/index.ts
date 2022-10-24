@@ -62,11 +62,14 @@ async function run() {
   console.log('Fetching commits...');
   const { commits, head, base } = await fetchDataFromGitHub(token, owner, repo);
   console.log('Creating PDF...');
+  core.debug('Temporary folder location: ' + process.env.RUNNER_TEMP);
   createPDF(commits, owner, repo, language, base.name, head.name);
   console.log('Wrote PDF file.');
   if (uploadArtifact) {
     console.log('Uploading artifact...');
-    await artifact.create().uploadArtifact('changelog', ['D:/temp/changelog/output.pdf'], '.');
+    await artifact
+      .create()
+      .uploadArtifact('changelog', [path.join(process.env.RUNNER_TEMP as string, 'output.pdf')], '.');
     console.log('Uploaded artifact.');
   }
   if (sendEmail === true) {
@@ -80,7 +83,7 @@ async function run() {
 
 function createPDF(commits: Commit[], owner: string, repo: string, language: string, baseTag: string, headTag: string) {
   const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream('D:/temp/changelog/output.pdf'));
+  doc.pipe(fs.createWriteStream(path.join(process.env.RUNNER_TEMP as string, 'output.pdf')));
 
   // list available fonts
   if (fs.existsSync(path.join(__dirname, 'fonts'))) {

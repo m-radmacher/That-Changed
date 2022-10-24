@@ -138,11 +138,14 @@ function run() {
         console.log('Fetching commits...');
         const { commits, head, base } = yield fetchDataFromGitHub(token, owner, repo);
         console.log('Creating PDF...');
+        core.debug('Temporary folder location: ' + process.env.RUNNER_TEMP);
         createPDF(commits, owner, repo, language, base.name, head.name);
         console.log('Wrote PDF file.');
         if (uploadArtifact) {
             console.log('Uploading artifact...');
-            yield artifact.create().uploadArtifact('changelog', ['D:/temp/changelog/output.pdf'], '.');
+            yield artifact
+                .create()
+                .uploadArtifact('changelog', [path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')], '.');
             console.log('Uploaded artifact.');
         }
         if (sendEmail === true) {
@@ -157,7 +160,7 @@ function run() {
 function createPDF(commits, owner, repo, language, baseTag, headTag) {
     var _a, _b, _c;
     const doc = new pdfkit_1.default();
-    doc.pipe(fs.createWriteStream('D:/temp/changelog/output.pdf'));
+    doc.pipe(fs.createWriteStream(path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')));
     // list available fonts
     if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
         core.debug('Available fonts: ' + fs.readdirSync(path_1.default.join(__dirname, 'fonts')).join(', '));
@@ -291,6 +294,7 @@ const nodemailer = __importStar(__nccwpck_require__(4289));
 const core = __importStar(__nccwpck_require__(2186));
 const chalk_1 = __importDefault(__nccwpck_require__(8818));
 const i18n_1 = __nccwpck_require__(2293);
+const path_1 = __importDefault(__nccwpck_require__(1017));
 function createMailTransport(host, port, secure, user, password) {
     const transporter = nodemailer.createTransport({
         host,
@@ -324,7 +328,7 @@ function sendChangelogMail(transporter, to, from, language, head, base) {
                 subject: language === 'de' ? (0, i18n_1.getGermanEmailSubject)(base, head) : (0, i18n_1.getEnglishEmailSubject)(base, head),
                 attachments: [
                     {
-                        path: 'D:/temp/changelog/output.pdf',
+                        path: path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf'),
                     },
                 ],
             });

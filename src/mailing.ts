@@ -3,6 +3,7 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import * as core from '@actions/core';
 import chalk from 'chalk';
 import { getEnglishEmailSubject, getGermanEmailSubject } from './i18n';
+import path from 'path';
 
 export function createMailTransport(host: string, port: number, secure: boolean, user: string, password: string) {
   const transporter = nodemailer.createTransport({
@@ -41,7 +42,7 @@ export async function sendChangelogMail(
       subject: language === 'de' ? getGermanEmailSubject(base, head) : getEnglishEmailSubject(base, head),
       attachments: [
         {
-          path: 'D:/temp/changelog/output.pdf',
+          path: path.join(process.env.RUNNER_TEMP as string, 'output.pdf'),
         },
       ],
     });
