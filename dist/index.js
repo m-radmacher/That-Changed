@@ -143,6 +143,7 @@ function run() {
         console.log('Wrote PDF file.');
         if (uploadArtifact) {
             console.log('Uploading artifact...');
+            core.debug('Temporary folder content: ' + fs.readdirSync(process.env.RUNNER_TEMP).join('; '));
             yield artifact
                 .create()
                 .uploadArtifact('changelog', [path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')], '.');
@@ -159,6 +160,8 @@ function run() {
 }
 function createPDF(commits, owner, repo, language, baseTag, headTag) {
     var _a, _b, _c;
+    // create empty pdf file
+    fs.closeSync(fs.openSync(path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf'), 'w'));
     const doc = new pdfkit_1.default();
     doc.pipe(fs.createWriteStream(path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')));
     // list available fonts

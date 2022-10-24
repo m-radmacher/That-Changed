@@ -67,6 +67,7 @@ async function run() {
   console.log('Wrote PDF file.');
   if (uploadArtifact) {
     console.log('Uploading artifact...');
+    core.debug('Temporary folder content: ' + fs.readdirSync(process.env.RUNNER_TEMP as string).join('; '));
     await artifact
       .create()
       .uploadArtifact('changelog', [path.join(process.env.RUNNER_TEMP as string, 'output.pdf')], '.');
@@ -82,6 +83,8 @@ async function run() {
 }
 
 function createPDF(commits: Commit[], owner: string, repo: string, language: string, baseTag: string, headTag: string) {
+  // create empty pdf file
+  fs.closeSync(fs.openSync(path.join(process.env.RUNNER_TEMP as string, 'output.pdf'), 'w'));
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream(path.join(process.env.RUNNER_TEMP as string, 'output.pdf')));
 
