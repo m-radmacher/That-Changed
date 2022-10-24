@@ -15,6 +15,7 @@ import {
   getGermanSubheader,
 } from './i18n';
 import { createMailTransport, sendChangelogMail, verifyMailTransporter } from './mailing';
+import path from 'path';
 
 export type Commit = {
   author: string | null;
@@ -87,6 +88,14 @@ async function createPDF(
 ) {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream('output.pdf'));
+
+  // list available fonts
+  core.debug(fs.readdirSync(path.join(__dirname), { withFileTypes: true }).join('; '));
+  if (fs.existsSync(path.join(__dirname, 'fonts'))) {
+    core.debug(fs.readdirSync(path.join(__dirname, 'fonts'), { withFileTypes: true }).join('; '));
+  } else {
+    core.debug('fonts folder does not exist');
+  }
 
   doc
     .font('./fonts/Inter.ttf')

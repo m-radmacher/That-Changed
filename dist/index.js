@@ -102,6 +102,7 @@ const pdfkit_1 = __importDefault(__nccwpck_require__(6790));
 const fs = __importStar(__nccwpck_require__(7147));
 const i18n_1 = __nccwpck_require__(2293);
 const mailing_1 = __nccwpck_require__(5280);
+const path_1 = __importDefault(__nccwpck_require__(1017));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const sendEmail = core.getBooleanInput('send_email');
@@ -158,6 +159,14 @@ function createPDF(commits, owner, repo, language, baseTag, headTag) {
     return __awaiter(this, void 0, void 0, function* () {
         const doc = new pdfkit_1.default();
         doc.pipe(fs.createWriteStream('output.pdf'));
+        // list available fonts
+        core.debug(fs.readdirSync(path_1.default.join(__dirname), { withFileTypes: true }).join('; '));
+        if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
+            core.debug(fs.readdirSync(path_1.default.join(__dirname, 'fonts'), { withFileTypes: true }).join('; '));
+        }
+        else {
+            core.debug('fonts folder does not exist');
+        }
         doc
             .font('./fonts/Inter.ttf')
             .fontSize(25)
