@@ -146,7 +146,7 @@ function run() {
             core.debug('Temporary folder content: ' + fs.readdirSync(process.env.RUNNER_TEMP).join('; '));
             yield artifact
                 .create()
-                .uploadArtifact('changelog', [path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')], '.');
+                .uploadArtifact('changelog', [path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf')], process.env.RUNNER_TEMP);
             console.log('Uploaded artifact.');
         }
         if (sendEmail === true) {

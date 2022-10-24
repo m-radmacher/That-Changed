@@ -70,7 +70,11 @@ async function run() {
     core.debug('Temporary folder content: ' + fs.readdirSync(process.env.RUNNER_TEMP as string).join('; '));
     await artifact
       .create()
-      .uploadArtifact('changelog', [path.join(process.env.RUNNER_TEMP as string, 'output.pdf')], '.');
+      .uploadArtifact(
+        'changelog',
+        [path.join(process.env.RUNNER_TEMP as string, 'output.pdf')],
+        process.env.RUNNER_TEMP as string
+      );
     console.log('Uploaded artifact.');
   }
   if (sendEmail === true) {
