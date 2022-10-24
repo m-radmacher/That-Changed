@@ -156,58 +156,56 @@ function run() {
 }
 function createPDF(commits, owner, repo, language, baseTag, headTag) {
     var _a, _b, _c;
-    return __awaiter(this, void 0, void 0, function* () {
-        const doc = new pdfkit_1.default();
-        doc.pipe(fs.createWriteStream('output.pdf'));
-        // list available fonts
-        if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
-            core.debug("Available fonts: " + fs.readdirSync(path_1.default.join(__dirname, 'fonts')).join(', '));
+    const doc = new pdfkit_1.default();
+    doc.pipe(fs.createWriteStream('output.pdf'));
+    // list available fonts
+    if (fs.existsSync(path_1.default.join(__dirname, 'fonts'))) {
+        core.debug('Available fonts: ' + fs.readdirSync(path_1.default.join(__dirname, 'fonts')).join(', '));
+    }
+    else {
+        core.debug('fonts folder does not exist');
+    }
+    doc
+        .font(path_1.default.join(__dirname, 'fonts', 'Inter.ttf'))
+        .fontSize(25)
+        .text(language === 'de' ? (0, i18n_1.getGermanHeader)(repo) : (0, i18n_1.getEnglishHeader)(repo), {
+        align: 'center',
+        link: `https://github.com/${owner}/${repo}`,
+    });
+    doc.moveDown(1);
+    doc
+        .fontSize(17)
+        .text(language === 'de' ? (0, i18n_1.getGermanSubheader)(baseTag, headTag) : (0, i18n_1.getEnglishSubheader)(baseTag, headTag), {
+        align: 'center',
+    });
+    doc.moveDown(3);
+    for (const commit of commits) {
+        if (commit.date) {
+            doc
+                .fontSize(12)
+                .text(commit.message, { continued: true, link: commit.url })
+                .fillColor('#828282')
+                .fontSize(10)
+                .text(` (${(_a = commit.date) === null || _a === void 0 ? void 0 : _a.getDate()}.${(_b = commit.date) === null || _b === void 0 ? void 0 : _b.getMonth()}.${(_c = commit.date) === null || _c === void 0 ? void 0 : _c.getFullYear()})`, {
+                link: commit.url,
+            });
         }
         else {
-            core.debug('fonts folder does not exist');
+            doc.fontSize(12).text(commit.message, { link: commit.url });
         }
         doc
-            .font(path_1.default.join(__dirname, 'fonts', 'Inter.ttf'))
-            .fontSize(25)
-            .text(language === 'de' ? (0, i18n_1.getGermanHeader)(repo) : (0, i18n_1.getEnglishHeader)(repo), {
-            align: 'center',
-            link: `https://github.com/${owner}/${repo}`,
-        });
+            .fillColor('#000000')
+            .fontSize(10)
+            .text(`${language === 'de' ? (0, i18n_1.getGermanAuthor)() : (0, i18n_1.getEnglishAuthor)()}: ${commit.author}`, { indent: 7 });
         doc.moveDown(1);
-        doc
-            .fontSize(17)
-            .text(language === 'de' ? (0, i18n_1.getGermanSubheader)(baseTag, headTag) : (0, i18n_1.getEnglishSubheader)(baseTag, headTag), {
-            align: 'center',
-        });
-        doc.moveDown(3);
-        for (const commit of commits) {
-            if (commit.date) {
-                doc
-                    .fontSize(12)
-                    .text(commit.message, { continued: true, link: commit.url })
-                    .fillColor('#828282')
-                    .fontSize(10)
-                    .text(` (${(_a = commit.date) === null || _a === void 0 ? void 0 : _a.getDate()}.${(_b = commit.date) === null || _b === void 0 ? void 0 : _b.getMonth()}.${(_c = commit.date) === null || _c === void 0 ? void 0 : _c.getFullYear()})`, {
-                    link: commit.url,
-                });
-            }
-            else {
-                doc.fontSize(12).text(commit.message, { link: commit.url });
-            }
-            doc
-                .fillColor('#000000')
-                .fontSize(10)
-                .text(`${language === 'de' ? (0, i18n_1.getGermanAuthor)() : (0, i18n_1.getEnglishAuthor)()}: ${commit.author}`, { indent: 7 });
-            doc.moveDown(1);
-        }
-        doc.moveDown(5);
-        doc.text(language === 'de' ? (0, i18n_1.getGermanOpenInGH)() : (0, i18n_1.getEnglishOpenInGH)(), {
-            link: `https://github.com/${owner}/${repo}/compare/${baseTag}...${headTag}`,
-            underline: true,
-        });
-        //Finalize PDF file
-        doc.end();
+    }
+    doc.moveDown(5);
+    doc.text(language === 'de' ? (0, i18n_1.getGermanOpenInGH)() : (0, i18n_1.getEnglishOpenInGH)(), {
+        link: `https://github.com/${owner}/${repo}/compare/${baseTag}...${headTag}`,
+        underline: true,
     });
+    //Finalize PDF file
+    doc.end();
 }
 function fetchDataFromGitHub(token, owner, repo) {
     return __awaiter(this, void 0, void 0, function* () {

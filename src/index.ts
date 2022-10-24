@@ -78,14 +78,7 @@ async function run() {
   }
 }
 
-async function createPDF(
-  commits: Commit[],
-  owner: string,
-  repo: string,
-  language: string,
-  baseTag: string,
-  headTag: string
-) {
+function createPDF(commits: Commit[], owner: string, repo: string, language: string, baseTag: string, headTag: string) {
   const doc = new PDFDocument();
   doc.pipe(fs.createWriteStream('output.pdf'));
 
