@@ -91,7 +91,7 @@ async function createPDF(
 
   // list available fonts
   if (fs.existsSync(path.join(__dirname, 'fonts'))) {
-    core.debug("Available fonts: " + fs.readdirSync(path.join(__dirname, 'fonts')).join(', '));
+    core.debug('Available fonts: ' + fs.readdirSync(path.join(__dirname, 'fonts')).join(', '));
   } else {
     core.debug('fonts folder does not exist');
   }
