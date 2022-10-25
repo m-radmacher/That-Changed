@@ -7,7 +7,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getGermanEmailSubject = exports.getEnglishEmailSubject = exports.getGermanAuthor = exports.getEnglishAuthor = exports.getGermanOpenInGH = exports.getEnglishOpenInGH = exports.getGermanHeader = exports.getEnglishHeader = exports.getGermanSubheader = exports.getEnglishSubheader = void 0;
+exports.getGermanOpenTicket = exports.getEnglishOpenTicket = exports.getGermanEmailSubject = exports.getEnglishEmailSubject = exports.getGermanAuthor = exports.getEnglishAuthor = exports.getGermanOpenInGH = exports.getEnglishOpenInGH = exports.getGermanHeader = exports.getEnglishHeader = exports.getGermanSubheader = exports.getEnglishSubheader = void 0;
 function getEnglishSubheader(baseTag, headTag) {
     return `Changelog from ${baseTag} to ${headTag}`;
 }
@@ -48,6 +48,14 @@ function getGermanEmailSubject(base, head) {
     return `Änderungsprotokoll für ${base} zu ${head}`;
 }
 exports.getGermanEmailSubject = getGermanEmailSubject;
+function getEnglishOpenTicket(ticketId) {
+    return `Open ticket ${ticketId}`;
+}
+exports.getEnglishOpenTicket = getEnglishOpenTicket;
+function getGermanOpenTicket(ticketId) {
+    return `Öffne Ticket ${ticketId}`;
+}
+exports.getGermanOpenTicket = getGermanOpenTicket;
 
 
 /***/ }),
@@ -113,6 +121,7 @@ function run() {
         const smtpPassword = core.getInput('smtp_password');
         const smtpFrom = core.getInput('smtp_from');
         const emailTo = core.getInput('email_to').split(';');
+        const issueTrackerUrlTemplate = core.getInput('issue_tracker_url');
         const uploadArtifact = core.getBooleanInput('upload');
         const language = core.getInput('language');
         const token = core.getInput('token') || process.env.GITHUB_TOKEN || '';
@@ -139,7 +148,7 @@ function run() {
         const { commits, head, base } = yield fetchDataFromGitHub(token, owner, repo);
         console.log('Creating PDF...');
         core.debug('Temporary folder location: ' + process.env.RUNNER_TEMP);
-        createPDF(commits, owner, repo, language, base.name, head.name);
+        createPDF(commits, owner, repo, language, base.name, head.name, issueTrackerUrlTemplate);
         console.log('Wrote PDF file.');
         if (uploadArtifact) {
             console.log('Uploading artifact...');
@@ -158,7 +167,7 @@ function run() {
         }
     });
 }
-function createPDF(commits, owner, repo, language, baseTag, headTag) {
+function createPDF(commits, owner, repo, language, baseTag, headTag, issueTrackerUrlTemplate) {
     var _a, _b, _c;
     // create empty pdf file
     fs.closeSync(fs.openSync(path_1.default.join(process.env.RUNNER_TEMP, 'output.pdf'), 'w'));
@@ -199,10 +208,30 @@ function createPDF(commits, owner, repo, language, baseTag, headTag) {
         else {
             doc.fontSize(12).text(commit.message, { link: commit.url });
         }
+        // add author if available
         doc
             .fillColor('#000000')
             .fontSize(10)
             .text(`${language === 'de' ? (0, i18n_1.getGermanAuthor)() : (0, i18n_1.getEnglishAuthor)()}: ${commit.author}`, { indent: 7 });
+        // check for issue tracker references in commit message
+        const issueTrackerRegex = new RegExp('$[a-zA-Z0-9_-]{1,6}$');
+        const issueTrackerReferences = issueTrackerRegex.exec(commit.message);
+        if (issueTrackerReferences && issueTrackerReferences.length > 0) {
+            if (!issueTrackerUrlTemplate) {
+                console.log(chalk_1.default.bgYellowBright('Found issue tracker references, but not issue tracker URL was configured.'));
+                return;
+            }
+            for (const match of issueTrackerReferences) {
+                doc
+                    .fillColor('#000000')
+                    .fontSize(10)
+                    .text(`${language === 'de' ? (0, i18n_1.getGermanOpenTicket)(match) : (0, i18n_1.getEnglishOpenTicket)(match)}: ${commit.author}`, {
+                    indent: 7,
+                    link: issueTrackerUrlTemplate.replace(`%ID%`, match.substring(1, match.length - 1)),
+                });
+                doc.moveDown(1);
+            }
+        }
         doc.moveDown(1);
     }
     doc.moveDown(5);

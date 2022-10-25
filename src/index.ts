@@ -8,10 +8,12 @@ import {
   getEnglishAuthor,
   getEnglishHeader,
   getEnglishOpenInGH,
+  getEnglishOpenTicket,
   getEnglishSubheader,
   getGermanAuthor,
   getGermanHeader,
   getGermanOpenInGH,
+  getGermanOpenTicket,
   getGermanSubheader,
 } from './i18n';
 import { createMailTransport, sendChangelogMail, verifyMailTransporter } from './mailing';
@@ -34,6 +36,7 @@ async function run() {
   const smtpFrom = core.getInput('smtp_from');
   const emailTo = core.getInput('email_to').split(';');
 
+  const issueTrackerUrlTemplate = core.getInput('issue_tracker_url');
   const uploadArtifact = core.getBooleanInput('upload');
   const language = core.getInput('language');
   const token = core.getInput('token') || process.env.GITHUB_TOKEN || '';
@@ -63,7 +66,7 @@ async function run() {
   const { commits, head, base } = await fetchDataFromGitHub(token, owner, repo);
   console.log('Creating PDF...');
   core.debug('Temporary folder location: ' + process.env.RUNNER_TEMP);
-  createPDF(commits, owner, repo, language, base.name, head.name);
+  createPDF(commits, owner, repo, language, base.name, head.name, issueTrackerUrlTemplate);
   console.log('Wrote PDF file.');
   if (uploadArtifact) {
     console.log('Uploading artifact...');
@@ -86,7 +89,15 @@ async function run() {
   }
 }
 
-function createPDF(commits: Commit[], owner: string, repo: string, language: string, baseTag: string, headTag: string) {
+function createPDF(
+  commits: Commit[],
+  owner: string,
+  repo: string,
+  language: string,
+  baseTag: string,
+  headTag: string,
+  issueTrackerUrlTemplate: string
+) {
   // create empty pdf file
   fs.closeSync(fs.openSync(path.join(process.env.RUNNER_TEMP as string, 'output.pdf'), 'w'));
   const doc = new PDFDocument();
@@ -130,10 +141,30 @@ function createPDF(commits: Commit[], owner: string, repo: string, language: str
     } else {
       doc.fontSize(12).text(commit.message, { link: commit.url });
     }
+    // add author if available
     doc
       .fillColor('#000000')
       .fontSize(10)
       .text(`${language === 'de' ? getGermanAuthor() : getEnglishAuthor()}: ${commit.author}`, { indent: 7 });
+    // check for issue tracker references in commit message
+    const issueTrackerRegex = new RegExp('$[a-zA-Z0-9_-]{1,6}$');
+    const issueTrackerReferences = issueTrackerRegex.exec(commit.message);
+    if (issueTrackerReferences && issueTrackerReferences.length > 0) {
+      if (!issueTrackerUrlTemplate) {
+        console.log(chalk.bgYellowBright('Found issue tracker references, but not issue tracker URL was configured.'));
+        return;
+      }
+      for (const match of issueTrackerReferences) {
+        doc
+          .fillColor('#000000')
+          .fontSize(10)
+          .text(`${language === 'de' ? getGermanOpenTicket(match) : getEnglishOpenTicket(match)}: ${commit.author}`, {
+            indent: 7,
+            link: issueTrackerUrlTemplate.replace(`%ID%`, match.substring(1, match.length - 1)),
+          });
+        doc.moveDown(1);
+      }
+    }
     doc.moveDown(1);
   }
 

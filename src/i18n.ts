@@ -37,3 +37,11 @@ export function getEnglishEmailSubject(base: string, head: string) {
 export function getGermanEmailSubject(base: string, head: string) {
   return `Änderungsprotokoll für ${base} zu ${head}`;
 }
+
+export function getEnglishOpenTicket(ticketId: string) {
+  return `Open ticket ${ticketId}`;
+}
+
+export function getGermanOpenTicket(ticketId: string) {
+  return `Öffne Ticket ${ticketId}`;
+}

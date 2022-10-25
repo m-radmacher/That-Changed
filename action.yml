@@ -44,6 +44,10 @@ inputs:
   email_to:
     description: 'Email address to send the email to. (Semicolon separated list)'
     required: false
+  issue_tracker_url:
+    description: 'The URL template of your issue tracker.'
+    required: false
+    default: ''
 env:
   'GITHUB_TOKEN': 'Provided by GitHub actions'
 runs:
