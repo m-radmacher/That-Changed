@@ -17,7 +17,7 @@
     "@types/node": "^18.11.9",
     "@types/nodemailer": "^6.4.6",
     "@types/pdfkit": "^0.12.8",
-    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "@vercel/ncc": "^0.34.0",
     "cpy-cli": "^4.2.0",
