@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
-    "@types/nodemailer": "^6.4.6",
+    "@types/nodemailer": "^6.4.7",
     "@types/pdfkit": "^0.12.8",
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.1",
