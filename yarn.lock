@@ -284,10 +284,10 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
-"@types/pdfkit@^0.12.8":
-  version "0.12.8"
-  resolved "https://registry.yarnpkg.com/@types/pdfkit/-/pdfkit-0.12.8.tgz#138c77166a1a74e6cf3547641393aaa7f20da22c"
-  integrity sha512-4DTar9jO0qjbEWTSVM324+Eg1s4NFGNjesBwJETKfWojZetst4BB8b4SxjOKj/kS+5+AD8PGObpy7p1mkc/TcA==
+"@types/pdfkit@^0.12.9":
+  version "0.12.9"
+  resolved "https://registry.yarnpkg.com/@types/pdfkit/-/pdfkit-0.12.9.tgz#4a6c41c8216eff4e1382f3a9b03385a94a11c192"
+  integrity sha512-z0y4rQky+nvno3nzyNUeZbrx2YvwP0GEfnpk8o3zG7jL4FYCZk9Vn11DzM+HC4RPzaJDOg9kiLzl3lng4FDcLA==
   dependencies:
     "@types/node" "*"
 
