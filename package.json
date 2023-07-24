@@ -11,7 +11,7 @@
     "delete": "rimraf dist/ lib/",
     "lint": "eslint src",
     "fix": "eslint src --fix",
-    "p": "yarn delete && yarn build && yarn package && yarn copy-fonts"
+    "p": "pnpm delete && pnpm build && pnpm package && pnpm copy-fonts"
   },
   "devDependencies": {
     "@types/node": "^20.4.4",
