@@ -18,16 +18,16 @@ dependencies:
     specifier: 4.1.2
     version: 4.1.2
   nodemailer:
-    specifier: ^6.9.3
-    version: 6.9.3
+    specifier: ^6.9.4
+    version: 6.9.4
 
 devDependencies:
   '@types/node':
     specifier: ^20.4.4
     version: 20.4.4
   '@types/nodemailer':
-    specifier: ^6.4.8
-    version: 6.4.8
+    specifier: ^6.4.9
+    version: 6.4.9
   '@types/pdfkit':
     specifier: ^0.12.10
     version: 0.12.10
@@ -532,8 +532,8 @@ packages:
     resolution: {integrity: sha512-CukZhumInROvLq3+b5gLev+vgpsIqC2D0deQr/yS1WnxvmYLlJXZpaQrQiseMY+6xusl79E04UjWoqyr+t1/Ew==}
     dev: true
 
-  /@types/nodemailer@6.4.8:
-    resolution: {integrity: sha512-oVsJSCkqViCn8/pEu2hfjwVO+Gb3e+eTWjg3PcjeFKRItfKpKwHphQqbYmPQrlMk+op7pNNWPbsJIEthpFN/OQ==}
+  /@types/nodemailer@6.4.9:
+    resolution: {integrity: sha512-XYG8Gv+sHjaOtUpiuytahMy2mM3rectgroNbs6R3djZEKmPNiIJwe9KqOJBGzKKnNZNKvnuvmugBgpq3w/S0ig==}
     dependencies:
       '@types/node': 20.4.4
     dev: true
@@ -1826,8 +1826,8 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /nodemailer@6.9.3:
-    resolution: {integrity: sha512-fy9v3NgTzBngrMFkDsKEj0r02U7jm6XfC3b52eoNV+GCrGj+s8pt5OqhiJdWKuw51zCTdiNR/IUD1z33LIIGpg==}
+  /nodemailer@6.9.4:
+    resolution: {integrity: sha512-CXjQvrQZV4+6X5wP6ZIgdehJamI63MFoYFGGPtHudWym9qaEHDNdPzaj5bfMCvxG1vhAileSWW90q7nL0N36mA==}
     engines: {node: '>=6.0.0'}
     dev: false
 
