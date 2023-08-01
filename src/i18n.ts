@@ -15,19 +15,19 @@ export function getGermanHeader(repo: string) {
 }
 
 export function getEnglishOpenInGH() {
-  return 'Open in GitHub';
+  return "Open in GitHub";
 }
 
 export function getGermanOpenInGH() {
-  return 'Auf GitHub öffnen';
+  return "Auf GitHub öffnen";
 }
 
 export function getEnglishAuthor() {
-  return 'Author';
+  return "Author";
 }
 
 export function getGermanAuthor() {
-  return 'Autor';
+  return "Autor";
 }
 
 export function getEnglishEmailSubject(base: string, head: string) {

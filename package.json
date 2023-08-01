@@ -14,19 +14,19 @@
     "p": "pnpm delete && pnpm build && pnpm package && pnpm copy-fonts"
   },
   "devDependencies": {
-    "@types/node": "^20.4.4",
-    "@types/nodemailer": "^6.4.8",
+    "@types/node": "^20.4.5",
+    "@types/nodemailer": "^6.4.9",
     "@types/pdfkit": "^0.12.10",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
     "@vercel/ncc": "^0.36.1",
     "cpy-cli": "^5.0.0",
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "pdfkit": "^0.13.0",
-    "prettier": "^2.8.8",
-    "rimraf": "^3.0.2",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.1",
     "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   },
@@ -35,6 +35,6 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
     "chalk": "4.1.2",
-    "nodemailer": "^6.9.3"
+    "nodemailer": "^6.9.4"
   }
 }
