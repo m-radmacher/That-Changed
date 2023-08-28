@@ -14,7 +14,7 @@
     "p": "pnpm delete && pnpm build && pnpm package && pnpm copy-fonts"
   },
   "devDependencies": {
-    "@types/node": "^20.5.1",
+    "@types/node": "^20.5.7",
     "@types/nodemailer": "^6.4.9",
     "@types/pdfkit": "^0.12.10",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
